@@ -38,9 +38,22 @@ $.widget( "ui.tooltip", {
 	},
 
 	_create: function() {
+		// In 1.9, ui.widget makes available this.document, so workaround it.
+		// this.document = $( element.style ?
+		// 	// element within the document
+		// 	element.ownerDocument :
+		// 	// element is window or document
+		// 	element.document || element );
+		this.document = $(document);
+		/*
 		this._bind({
 			mouseover: "open",
 			focusin: "open"
+		});
+		*/
+		var self = this;
+		this.element.bind('mouseover focusin', function() {
+			self.open();
 		});
 
 		// IDs of generated tooltips, needed for destroy
@@ -151,10 +164,15 @@ $.widget( "ui.tooltip", {
 			}, this.options.position ) )
 			.hide();
 
+		/*
 		this._show( tooltip, this.options.show );
+		*/
+		// TODO: _show makes use of $.fn.show (from effects.core 1.9).
+		tooltip.show();
 
 		this._trigger( "open", event, { tooltip: tooltip } );
 
+		/*
 		this._bind( target, {
 			mouseleave: "close",
 			focusout: "close",
@@ -166,6 +184,7 @@ $.widget( "ui.tooltip", {
 				}
 			}
 		});
+		*/
 	},
 
 	close: function( event, force ) {
